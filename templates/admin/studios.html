@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Админ-панель</h1>
+{% include "admin/_tabs.html" %}
+<p><a class="btn" href="{{ url_for('admin_studio_new') }}">+ Добавить студию</a></p>
+<table class="table">
+  <thead><tr><th>ID</th><th>Название</th><th>Тип</th><th>Цена</th><th>Часы</th><th>Статус</th><th></th></tr></thead>
+  <tbody>
+  {% for v in studios %}
+    <tr>
+      <td>{{ v.id }}</td>
+      <td><a href="{{ url_for('studio_detail', studio_id=v.id) }}">{{ v.name }}</a><br><small class="muted">{{ v.address }}</small></td>
+      <td>{{ v.category }}</td>
+      <td>{{ v.price_per_hour }} ₽</td>
+      <td>{{ '%02d'|format(v.open_hour) }}:00–{{ '%02d'|format(v.close_hour) }}:00</td>
+      <td>{% if v.is_active %}<span class="status status-active">Активна</span>{% else %}<span class="status status-cancelled">Скрыта</span>{% endif %}</td>
+      <td><a class="btn btn-small btn-ghost" href="{{ url_for('admin_studio_edit', studio_id=v.id) }}">Изменить</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ studio.name }} — ФотоСлот{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('index') }}">← Все студии</a>
+
+<div class="card">
+  <span class="tag">{{ studio.category }}</span>
+  {% if not studio.is_active %}<span class="tag tag-off">Скрыта</span>{% endif %}
+  <h1>{{ studio.name }}</h1>
+  <p class="muted">{{ studio.address }}</p>
+  <p>{{ studio.description }}</p>
+  <p><strong>{{ studio.price_per_hour }} ₽/час</strong></p>
+</div>
+
+<h2>Выберите дату</h2>
+<div class="days">
+  {% for d in days %}
+    <a class="day {% if d == selected %}day-active{% endif %}"
+       href="{{ url_for('studio_detail', studio_id=studio.id, date=d.isoformat()) }}">
+      <span>{{ ['пн','вт','ср','чт','пт','сб','вс'][d.weekday()] }}</span>
+      <strong>{{ d.day }}</strong>
+    </a>
+  {% endfor %}
+</div>
+
+<h2>Свободное время на {{ selected|ru_date }}</h2>
+<div class="slots">
+  {% for s in slots %}
+    {% if s.state == 'free' %}
+      <form method="post" action="{{ url_for('book', studio_id=studio.id) }}">
+        <input type="hidden" name="date" value="{{ selected.isoformat() }}">
+        <input type="hidden" name="hour" value="{{ s.hour }}">
+        <button class="slot slot-free" type="submit"
+                onclick="return confirm('Забронировать {{ s.label }} за {{ studio.price_per_hour }} ₽?')">
+          {{ s.label }}
+        </button>
+      </form>
+    {% else %}
+      <span class="slot slot-{{ s.state }}">{{ s.label }}<small>{{ 'занято' if s.state == 'booked' else 'прошло' }}</small></span>
+    {% endif %}
+  {% endfor %}
+</div>
+{% if not current_user %}
+  <p class="muted">Чтобы забронировать, <a href="{{ url_for('login', next=request.full_path) }}">войдите</a> или зарегистрируйтесь.</p>
+{% endif %}
+{% endblock %}

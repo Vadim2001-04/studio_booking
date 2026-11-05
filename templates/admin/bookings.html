@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Админ-панель</h1>
+{% include "admin/_tabs.html" %}
+
+<form class="filters" method="get">
+  <select name="studio_id">
+    <option value="">Все студии</option>
+    {% for v in studios %}<option value="{{ v.id }}" {% if v.id == studio_id %}selected{% endif %}>{{ v.name }}</option>{% endfor %}
+  </select>
+  <select name="status">
+    <option value="">Любой статус</option>
+    <option value="active" {% if status == 'active' %}selected{% endif %}>Активные</option>
+    <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Отменённые</option>
+  </select>
+  <button class="btn btn-small">Показать</button>
+</form>
+
+<div class="stats">
+  <div class="card stat"><span class="muted">Броней в выборке</span><strong>{{ bookings|length }}</strong></div>
+  <div class="card stat"><span class="muted">Сумма активных</span><strong>{{ restudio }} ₽</strong></div>
+</div>
+
+<table class="table">
+  <thead><tr><th>#</th><th>Студия</th><th>Клиент</th><th>Дата</th><th>Время</th><th>Цена</th><th>Статус</th><th></th></tr></thead>
+  <tbody>
+  {% for b in bookings %}
+    <tr>
+      <td>{{ b.id }}</td>
+      <td>{{ b.studio_name }}</td>
+      <td>{{ b.user_name }}<br><small class="muted">{{ b.user_email }}</small></td>
+      <td>{{ b.date|ru_date }}</td>
+      <td>{{ slot_label(b.hour) }}</td>
+      <td>{{ b.price }} ₽</td>
+      <td>{% if b.status == 'active' %}<span class="status status-active">Активна</span>{% else %}<span class="status status-cancelled">Отменена</span>{% endif %}</td>
+      <td>
+        {% if b.status == 'active' %}
+        <form method="post" action="{{ url_for('cancel_booking', booking_id=b.id) }}" onsubmit="return confirm('Отменить бронь #{{ b.id }}?')">
+          <input type="hidden" name="next" value="{{ request.full_path }}">
+          <button class="btn btn-small btn-danger">Отменить</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="8" class="muted">Броней нет.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

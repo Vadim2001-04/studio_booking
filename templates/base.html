@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ФотоСлот{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="logo" href="{{ url_for('index') }}">ФотоСлот</a>
+    <nav>
+      <a href="{{ url_for('index') }}">Студии</a>
+      {% if current_user %}
+        <a href="{{ url_for('my_bookings') }}">Мои брони</a>
+        {% if current_user.is_admin %}
+          <a href="{{ url_for('admin_studios') }}">Админка</a>
+        {% endif %}
+        <span class="muted">{{ current_user.name }}</span>
+        <a href="{{ url_for('logout') }}">Выйти</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Войти</a>
+        <a class="btn btn-small" href="{{ url_for('register') }}">Регистрация</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="container footer muted">MVP · Система бронирования фотостудий</footer>
+</body>
+</html>

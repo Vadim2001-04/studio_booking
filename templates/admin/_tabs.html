@@ -1,0 +1,4 @@
+<div class="tabs">
+  <a class="{% if request.endpoint.startswith('admin_studio') %}tab-active{% endif %}" href="{{ url_for('admin_studios') }}">Студии</a>
+  <a class="{% if request.endpoint == 'admin_bookings' %}tab-active{% endif %}" href="{{ url_for('admin_bookings') }}">Все брони</a>
+</div>

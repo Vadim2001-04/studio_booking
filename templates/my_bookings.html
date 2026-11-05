@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Мои брони</h1>
+{% if bookings %}
+<table class="table">
+  <thead><tr><th>Студия</th><th>Дата</th><th>Время</th><th>Цена</th><th>Статус</th><th></th></tr></thead>
+  <tbody>
+  {% for b in bookings %}
+    <tr>
+      <td><a href="{{ url_for('studio_detail', studio_id=b.studio_id) }}">{{ b.studio_name }}</a><br><small class="muted">{{ b.address }}</small></td>
+      <td>{{ b.date|ru_date }}</td>
+      <td>{{ slot_label(b.hour) }}</td>
+      <td>{{ b.price }} ₽</td>
+      <td>
+        {% if b.status == 'cancelled' %}<span class="status status-cancelled">Отменена</span>
+        {% elif b.is_future %}<span class="status status-active">Активна</span>
+        {% else %}<span class="status status-done">Завершена</span>{% endif %}
+      </td>
+      <td>
+        {% if b.status == 'active' and b.is_future %}
+        <form method="post" action="{{ url_for('cancel_booking', booking_id=b.id) }}"
+              onsubmit="return confirm('Отменить бронь?')">
+          <button class="btn btn-small btn-danger">Отменить</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="muted">У вас пока нет броней. <a href="{{ url_for('index') }}">Выбрать студию →</a></p>
+{% endif %}
+{% endblock %}

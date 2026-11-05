@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Фотостудии</h1>
+
+<form class="filters" method="get">
+  <a class="chip {% if not selected_category %}chip-active{% endif %}" href="{{ url_for('index') }}">Все</a>
+  {% for s in categories %}
+    <a class="chip {% if s == selected_category %}chip-active{% endif %}" href="{{ url_for('index', category=s) }}">{{ s }}</a>
+  {% endfor %}
+</form>
+
+{% if studios %}
+<div class="grid">
+  {% for v in studios %}
+  <a class="card studio-card" href="{{ url_for('studio_detail', studio_id=v.id) }}">
+    <span class="tag">{{ v.category }}</span>
+    <h3>{{ v.name }}</h3>
+    <p class="muted">{{ v.address }}</p>
+    <p>{{ v.description }}</p>
+    <div class="card-footer">
+      <strong>{{ v.price_per_hour }} ₽/час</strong>
+      <span class="muted">{{ '%02d'|format(v.open_hour) }}:00–{{ '%02d'|format(v.close_hour) }}:00</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+  <p class="muted">По выбранному фильтру студий нет.</p>
+{% endif %}
+{% endblock %}

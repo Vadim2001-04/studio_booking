@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Админ-панель</h1>
+{% include "admin/_tabs.html" %}
+<div class="card form-card wide">
+  <h2>{{ 'Новая студия' if is_new else 'Редактирование: ' ~ studio.name }}</h2>
+  <form method="post">
+    <label>Название <input name="name" value="{{ studio.name }}" required></label>
+    <label>Тип студии
+      <select name="category">
+        {% for s in categories %}<option {% if s == studio.category %}selected{% endif %}>{{ s }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Адрес <input name="address" value="{{ studio.address }}" required></label>
+    <label>Описание <textarea name="description" rows="3">{{ studio.description }}</textarea></label>
+    <div class="row">
+      <label>Цена, ₽/час <input type="number" name="price_per_hour" min="1" value="{{ studio.price_per_hour }}" required></label>
+      <label>Открытие (час) <input type="number" name="open_hour" min="0" max="23" value="{{ studio.open_hour }}" required></label>
+      <label>Закрытие (час) <input type="number" name="close_hour" min="1" max="24" value="{{ studio.close_hour }}" required></label>
+    </div>
+    <label class="checkbox"><input type="checkbox" name="is_active" {% if studio.is_active %}checked{% endif %}> Показывать в каталоге и принимать брони</label>
+    <button class="btn" type="submit">Сохранить</button>
+    <a class="btn btn-ghost" href="{{ url_for('admin_studios') }}">Отмена</a>
+  </form>
+</div>
+{% endblock %}

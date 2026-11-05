@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card form-card">
+  <h1>Вход</h1>
+  <form method="post">
+    <label>Email <input type="email" name="email" required autofocus></label>
+    <label>Пароль <input type="password" name="password" required></label>
+    <button class="btn" type="submit">Войти</button>
+  </form>
+  <p class="muted">Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card form-card">
+  <h1>Регистрация</h1>
+  <form method="post">
+    <label>Имя <input name="name" value="{{ request.form.name }}" required autofocus></label>
+    <label>Email <input type="email" name="email" value="{{ request.form.email }}" required></label>
+    <label>Пароль (мин. 6 символов) <input type="password" name="password" minlength="6" required></label>
+    <button class="btn" type="submit">Создать аккаунт</button>
+  </form>
+  <p class="muted">Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+</div>
+{% endblock %}
